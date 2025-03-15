@@ -121,6 +121,19 @@ h1 {
 
 .content {
     overflow: hidden;
+    opacity: 1;
+    max-height: 1000px;
+    transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+    visibility: visible;
+}
+
+.content.hidden {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .settings {
@@ -313,13 +326,96 @@ h1 {
     height: 24px;
 }
 
+/* Initial state - hide settings section immediately */
 .api-key-section {
     display: flex;
+    flex-direction: column;
     gap: 8px;
     padding: 16px;
-    align-items: center;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
 }
 
 .api-key-section.hidden {
-    display: none;
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+.api-key-section:not(.hidden) {
+    opacity: 1;
+    max-height: 500px;
+    padding: 16px;
+}
+
+/* Add styles for API provider selection */
+.api-key-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.api-provider-select,
+.model-provider-select {
+    padding: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    background-color: white;
+    font-size: 14px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.api-provider-select:focus,
+.model-provider-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.saved-providers {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.saved-provider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 12px;
+}
+
+.saved-provider .provider-name {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.saved-provider .remove-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-provider .remove-btn:hover {
+    color: #ef4444;
+}
+
+.model-selection {
+    margin-bottom: 16px;
 }

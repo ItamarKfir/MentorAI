@@ -1,5 +1,21 @@
 // Secure API key handling with encryption
 class SecureStorage {
+    static API_PROVIDERS = {
+        OPENAI: 'openai',
+        GOOGLE: 'google'
+    };
+
+    static API_KEY_PATTERNS = {
+        [this.API_PROVIDERS.OPENAI]: {
+            prefix: 'sk-',
+            minLength: 32
+        },
+        [this.API_PROVIDERS.GOOGLE]: {
+            prefix: 'AIza',
+            minLength: 39
+        }
+    };
+
     static async encryptData(data) {
         const encoder = new TextEncoder();
         const encodedData = encoder.encode(data);
@@ -63,30 +79,43 @@ class SecureStorage {
         }
     }
     
-    static validateApiKey(apiKey) {
+    static validateApiKey(apiKey, provider) {
         if (!apiKey || typeof apiKey !== 'string') {
             throw new Error('Invalid API key format');
         }
         
-        if (!apiKey.startsWith('sk-')) {
-            throw new Error('Invalid API key prefix');
+        const pattern = this.API_KEY_PATTERNS[provider];
+        if (!pattern) {
+            throw new Error('Invalid API provider');
         }
         
-        if (apiKey.length < 32) {
-            throw new Error('API key too short');
+        if (pattern.prefix && !apiKey.startsWith(pattern.prefix)) {
+            throw new Error(`Invalid API key prefix for ${provider}. Expected prefix: ${pattern.prefix}`);
+        }
+        
+        if (apiKey.length < pattern.minLength) {
+            throw new Error(`API key too short for ${provider}. Minimum length: ${pattern.minLength}`);
         }
         
         return true;
     }
     
-    static async securelyStoreApiKey(apiKey) {
+    static async securelyStoreApiKey(apiKey, provider) {
         try {
-            this.validateApiKey(apiKey);
+            this.validateApiKey(apiKey, provider);
             const encryptedData = await this.encryptData(apiKey);
-            await chrome.storage.local.set({
-                secureApiKey: encryptedData,
+            
+            // Get existing keys
+            const data = await chrome.storage.local.get('apiKeys');
+            const apiKeys = data.apiKeys || {};
+            
+            // Update the specific provider's key
+            apiKeys[provider] = {
+                data: encryptedData,
                 lastUpdated: Date.now()
-            });
+            };
+            
+            await chrome.storage.local.set({ apiKeys });
             return true;
         } catch (error) {
             console.error('Error storing API key:', error);
@@ -94,26 +123,51 @@ class SecureStorage {
         }
     }
     
-    static async getSecureApiKey() {
+    static async getSecureApiKey(provider) {
         try {
-            const data = await chrome.storage.local.get('secureApiKey');
-            if (!data.secureApiKey) {
+            const data = await chrome.storage.local.get('apiKeys');
+            const apiKeys = data.apiKeys || {};
+            
+            if (!apiKeys[provider]) {
                 return null;
             }
-            return await this.decryptData(data.secureApiKey);
+            
+            return await this.decryptData(apiKeys[provider].data);
         } catch (error) {
             console.error('Error retrieving API key:', error);
             throw error;
         }
     }
     
-    static async clearApiKey() {
+    static async clearApiKey(provider) {
         try {
-            await chrome.storage.local.remove(['secureApiKey', 'lastUpdated']);
+            const data = await chrome.storage.local.get('apiKeys');
+            const apiKeys = data.apiKeys || {};
+            
+            if (provider) {
+                // Clear specific provider
+                delete apiKeys[provider];
+                await chrome.storage.local.set({ apiKeys });
+            } else {
+                // Clear all providers
+                await chrome.storage.local.remove('apiKeys');
+            }
+            
             return true;
         } catch (error) {
-            console.error('Error clearing API key:', error);
+            console.error('Error clearing API key(s):', error);
             throw error;
+        }
+    }
+
+    static async getAllProviders() {
+        try {
+            const data = await chrome.storage.local.get('apiKeys');
+            const apiKeys = data.apiKeys || {};
+            return Object.keys(apiKeys);
+        } catch (error) {
+            console.error('Error getting providers:', error);
+            return [];
         }
     }
 }
