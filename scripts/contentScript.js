@@ -22,7 +22,7 @@ class LeetCodeProblemDetector {
         this.maxRetries = 3;
         this.observers = [];
         this.logCount = 0;
-        this.maxLogs = 5; // Maximum number of logs to show
+        this.maxLogs = 5;
         this.languageRetryCount = 0;
         this.hasShownWelcome = false;
         this.init();
@@ -357,6 +357,7 @@ class LeetCodeProblemDetector {
         // Create welcome message container
         const welcome = document.createElement('div');
         welcome.className = 'mentor-welcome';
+        welcome.style.cursor = 'pointer'; // Add pointer cursor to indicate clickability
 
         // Create and add logo
         const logo = document.createElement('img');
@@ -366,18 +367,19 @@ class LeetCodeProblemDetector {
 
         // Add welcome text
         const text = document.createElement('span');
-        text.textContent = 'Hi! I\'m here to help you! 😊';
+        text.textContent = 'Hi! I\'m here to help you! 😊 Click to open';
         welcome.appendChild(text);
 
-        // Add to page
-        document.body.appendChild(welcome);
-
-        // Remove after 5 seconds
-        setTimeout(() => {
+        // Add click handler to open extension and remove welcome message
+        welcome.addEventListener('click', () => {
+            chrome.runtime.sendMessage({ type: 'openExtension' });
             if (welcome && welcome.parentElement) {
                 welcome.parentElement.removeChild(welcome);
             }
-        }, 5000);
+        });
+
+        // Add to page
+        document.body.appendChild(welcome);
     }
 }
 

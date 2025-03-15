@@ -9,6 +9,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 console.log('Problem info updated in storage:', message.data.language);
             }
         });
+    } else if (message.type === 'openExtension') {
+        // Trigger the extension popup by clicking the extension icon programmatically
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const tab = tabs[0];
+            chrome.action.openPopup && chrome.action.openPopup() || 
+            chrome.action.setPopup({ 
+                tabId: tab.id,
+                popup: 'popup/popup.html'
+            }, () => {
+                // After setting the popup, programmatically click the extension icon
+                chrome.action.getUserSettings(() => {
+                    chrome.action.setBadgeText({ text: '' });
+                });
+            });
+        });
     }
 });
 
