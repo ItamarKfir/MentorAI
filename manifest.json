@@ -6,12 +6,12 @@
     "permissions": [
         "activeTab",
         "storage",
-        "scripting",
-        "cookies"
+        "scripting"
     ],
     "host_permissions": [
         "https://leetcode.com/*",
-        "https://api.openai.com/*"
+        "https://api.openai.com/*",
+        "https://generativelanguage.googleapis.com/*"
     ],
     "action": {
         "default_popup": "popup/popup.html",
@@ -30,6 +30,7 @@
                 "styles/content.css"
             ],
             "js": [
+                "scripts/secureStorage.js",
                 "scripts/contentScript.js"
             ]
         }
@@ -41,7 +42,7 @@
         "48": "assets/icon.png"
     },
     "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://api.openai.com"
+        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://api.openai.com https://generativelanguage.googleapis.com; frame-src 'none'; worker-src 'self'"
     },
     "web_accessible_resources": [
         {

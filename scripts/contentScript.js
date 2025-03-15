@@ -22,7 +22,7 @@ class LeetCodeProblemDetector {
         this.maxRetries = 3;
         this.observers = [];
         this.logCount = 0;
-        this.maxLogs = 5; // Maximum number of logs to show
+        this.maxLogs = 5;
         this.languageRetryCount = 0;
         this.hasShownWelcome = false;
         this.init();
@@ -233,11 +233,21 @@ class LeetCodeProblemDetector {
             }
 
             // Try multiple selectors for difficulty
-            const difficultyElement = document.querySelector('.text-olive, .text-yellow, .text-pink, .difficulty-label');
+            const difficultyElement = document.querySelector('[class*="text-difficulty-"], .text-olive, .text-yellow, .text-pink, .difficulty-label');
             let difficulty = 'Unknown';
             if (difficultyElement) {
                 const text = difficultyElement.textContent.trim().toLowerCase();
-                if (text.includes('easy') || difficultyElement.classList.contains('text-olive')) {
+                const classList = Array.from(difficultyElement.classList);
+                // Check for new UI classes first
+                if (classList.some(cls => cls.includes('text-difficulty-easy'))) {
+                    difficulty = 'Easy';
+                } else if (classList.some(cls => cls.includes('text-difficulty-medium'))) {
+                    difficulty = 'Medium';
+                } else if (classList.some(cls => cls.includes('text-difficulty-hard'))) {
+                    difficulty = 'Hard';
+                }
+                // Fallback to old UI classes
+                else if (text.includes('easy') || difficultyElement.classList.contains('text-olive')) {
                     difficulty = 'Easy';
                 } else if (text.includes('medium') || difficultyElement.classList.contains('text-yellow')) {
                     difficulty = 'Medium';
@@ -357,6 +367,7 @@ class LeetCodeProblemDetector {
         // Create welcome message container
         const welcome = document.createElement('div');
         welcome.className = 'mentor-welcome';
+        welcome.style.cursor = 'pointer'; // Add pointer cursor to indicate clickability
 
         // Create and add logo
         const logo = document.createElement('img');
@@ -366,18 +377,19 @@ class LeetCodeProblemDetector {
 
         // Add welcome text
         const text = document.createElement('span');
-        text.textContent = 'Hi! I\'m here to help you! 😊';
+        text.textContent = 'Hi! I\'m here to help you! 😊 Click to open';
         welcome.appendChild(text);
 
-        // Add to page
-        document.body.appendChild(welcome);
-
-        // Remove after 5 seconds
-        setTimeout(() => {
+        // Add click handler to open extension and remove welcome message
+        welcome.addEventListener('click', () => {
+            chrome.runtime.sendMessage({ type: 'openExtension' });
             if (welcome && welcome.parentElement) {
                 welcome.parentElement.removeChild(welcome);
             }
-        }, 5000);
+        });
+
+        // Add to page
+        document.body.appendChild(welcome);
     }
 }
 

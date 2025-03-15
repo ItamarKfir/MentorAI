@@ -1,37 +1,3 @@
-.mentor-ai-notification {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background-color: white;
-    border-radius: 8px;
-    padding: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10000;
-    animation: slideIn 0.3s ease-out;
-    transition: opacity 0.5s ease-out;
-}
-
-.mentor-ai-notification.fade-out {
-    opacity: 0;
-}
-
-.notification-content {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.notification-icon {
-    width: 24px;
-    height: 24px;
-}
-
-.notification-text {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
 .difficulty {
     font-size: 12px;
     padding: 2px 8px;
@@ -62,36 +28,6 @@
     z-index: 9999;
 }
 
-.mentor-ai-fab-button {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background-color: #6366f1;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    position: relative;
-}
-
-.mentor-ai-fab-button:hover {
-    background-color: #4f46e5;
-    transform: scale(1.05);
-}
-
-.mentor-ai-fab-button:hover .fab-tooltip {
-    opacity: 1;
-    transform: translateX(-100%) translateX(-12px);
-}
-
-.mentor-ai-fab-button img {
-    width: 32px;
-    height: 32px;
-}
 
 .fab-tooltip {
     position: absolute;

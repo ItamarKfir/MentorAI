@@ -121,6 +121,19 @@ h1 {
 
 .content {
     overflow: hidden;
+    opacity: 1;
+    max-height: 1000px;
+    transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+    visibility: visible;
+}
+
+.content.hidden {
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .settings {
@@ -207,22 +220,51 @@ h1 {
     border-radius: 6px;
     margin: 10px 0;
     overflow-x: auto;
+    border: 1px solid #333;
 }
 
 .code-header {
     background-color: #2d2d2d;
     color: #e0e0e0;
-    padding: 4px 10px;
-    font-size: 12px;
-    border-top-left-radius: 6px;
-    border-top-right-radius: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 1px solid #333;
+}
+
+/* Language-specific styling */
+.code-block.cpp .code-header,
+.code-block.csharp .code-header,
+.code-block.java .code-header {
+    color: white;
+}
+
+.code-block.javascript .code-header {
+    background-color: #f7df1e;
+    color: #000;
+}
+
+.code-block.python .code-header {
+    background-color: #3776ab;
+    color: white;
 }
 
 .code-block pre {
     margin: 0;
-    padding: 10px;
+    padding: 12px;
     color: #e0e0e0;
     font-family: 'Consolas', 'Monaco', monospace;
+    line-height: 1.5;
+    font-size: 14px;
+    background-color: #1e1e1e;
+}
+
+.code-block code {
+    display: block;
+    white-space: pre-wrap;
+    tab-size: 4;
 }
 
 .inline-code {
@@ -231,6 +273,7 @@ h1 {
     padding: 2px 4px;
     border-radius: 3px;
     font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9em;
 }
 
 /* Style for error messages */
@@ -240,6 +283,19 @@ h1 {
     background-color: #fef2f2;
     border-radius: 4px;
     margin-top: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #fee2e2;
+}
+
+/* Style for success messages */
+.success-message {
+    color: #059669;
+    padding: 8px;
+    background-color: #ecfdf5;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #a7f3d0;
 }
 
 /* Style for response content */
@@ -270,13 +326,96 @@ h1 {
     height: 24px;
 }
 
+/* Initial state - hide settings section immediately */
 .api-key-section {
     display: flex;
+    flex-direction: column;
     gap: 8px;
     padding: 16px;
-    align-items: center;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease-in-out, max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
 }
 
 .api-key-section.hidden {
-    display: none;
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+.api-key-section:not(.hidden) {
+    opacity: 1;
+    max-height: 500px;
+    padding: 16px;
+}
+
+/* Add styles for API provider selection */
+.api-key-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.api-provider-select,
+.model-provider-select {
+    padding: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    background-color: white;
+    font-size: 14px;
+    color: var(--text-color);
+    cursor: pointer;
+}
+
+.api-provider-select:focus,
+.model-provider-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+}
+
+.saved-providers {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.saved-provider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--border-radius);
+    font-size: 12px;
+}
+
+.saved-provider .provider-name {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.saved-provider .remove-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.saved-provider .remove-btn:hover {
+    color: #ef4444;
+}
+
+.model-selection {
+    margin-bottom: 16px;
 }
