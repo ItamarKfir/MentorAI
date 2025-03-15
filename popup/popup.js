@@ -150,6 +150,11 @@ class MentorAIPopup {
       this.apiKeyInput.type = 'password';
       this.saveApiKeyBtn.textContent = 'Save Key';
       await this.loadSavedProviders();
+      
+      // Hide API key section and show main content
+      this.apiKeySection.classList.add('hidden');
+      this.mainContent.classList.remove('hidden');
+      
       this.showSuccess(`${provider.charAt(0).toUpperCase() + provider.slice(1)} API key saved successfully`);
     } catch (error) {
       this.showError(error.message);
