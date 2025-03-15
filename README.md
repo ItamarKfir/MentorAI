@@ -52,14 +52,11 @@ A Chrome extension that provides AI-powered assistance for solving LeetCode prob
 1. **Clone and Setup**
    ```bash
    git clone https://github.com/ItamarKfir/MentorAI.git
-   cd MentorAI
-   npm install
-   ```
 
 2. **Configure API Keys**
    - Obtain API keys from supported providers:
      - OpenAI: https://platform.openai.com/
-     - Google AI: https://makersuite.google.com/
+     - Google AI (Easy & Free): https://aistudio.google.com/apikey
 
 3. **Load in Chrome**
    - Open Chrome and go to `chrome://extensions/`
@@ -88,21 +85,6 @@ A Chrome extension that provides AI-powered assistance for solving LeetCode prob
 - Node.js (v14 or higher)
 - npm (v6 or higher)
 - Chrome browser
-
-### Build
-```bash
-npm run build
-```
-
-### Test
-```bash
-npm test
-```
-
-### Lint
-```bash
-npm run lint
-```
 
 ## Future Enhancements
 
