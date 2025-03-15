@@ -51,7 +51,7 @@ A Chrome extension that provides AI-powered assistance for solving LeetCode prob
 
 1. **Clone and Setup**
    ```bash
-   git clone https://github.com/yourusername/MentorAI.git
+   git clone https://github.com/ItamarKfir/MentorAI.git
    cd MentorAI
    npm install
    ```
