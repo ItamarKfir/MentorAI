@@ -233,11 +233,21 @@ class LeetCodeProblemDetector {
             }
 
             // Try multiple selectors for difficulty
-            const difficultyElement = document.querySelector('.text-olive, .text-yellow, .text-pink, .difficulty-label');
+            const difficultyElement = document.querySelector('[class*="text-difficulty-"], .text-olive, .text-yellow, .text-pink, .difficulty-label');
             let difficulty = 'Unknown';
             if (difficultyElement) {
                 const text = difficultyElement.textContent.trim().toLowerCase();
-                if (text.includes('easy') || difficultyElement.classList.contains('text-olive')) {
+                const classList = Array.from(difficultyElement.classList);
+                // Check for new UI classes first
+                if (classList.some(cls => cls.includes('text-difficulty-easy'))) {
+                    difficulty = 'Easy';
+                } else if (classList.some(cls => cls.includes('text-difficulty-medium'))) {
+                    difficulty = 'Medium';
+                } else if (classList.some(cls => cls.includes('text-difficulty-hard'))) {
+                    difficulty = 'Hard';
+                }
+                // Fallback to old UI classes
+                else if (text.includes('easy') || difficultyElement.classList.contains('text-olive')) {
                     difficulty = 'Easy';
                 } else if (text.includes('medium') || difficultyElement.classList.contains('text-yellow')) {
                     difficulty = 'Medium';

@@ -241,17 +241,49 @@ Please provide general guidance on solving this problem in ${language}.`;
   }
 
   formatResponseWithCodeBackground(response) {
-    // Replace code blocks with styled div, using the language directly
-    response = response.replace(/```(\w*)\n([\s\S]*?)```/g, (match, language, code) => {
-      return `<div class="code-block"><div class="code-header">${language || 'Code'}</div><pre><code>${code}</code></pre></div>`;
+    // First, normalize any malformed code blocks (missing backticks)
+    response = response.replace(/``(\w+)\n([\s\S]*?)`(?!\`)/g, '```$1\n$2```');
+    
+    // Replace code blocks with styled div, handling various language formats
+    response = response.replace(/```([\w+#]+)?\n([\s\S]*?)```/g, (match, language, code) => {
+      // Normalize language name
+      let displayLanguage = (language || '').toLowerCase().trim();
+      
+      // Handle various language names
+      const languageMap = {
+        'cpp': 'cpp',
+        'c++': 'cpp',
+        'c': 'cpp',
+        'c#': 'csharp',
+        'csharp': 'csharp',
+        'cs': 'csharp',
+        'javascript': 'javascript',
+        'js': 'javascript',
+        'python': 'python',
+        'py': 'python',
+        'java': 'java'
+      };
+
+      displayLanguage = languageMap[displayLanguage] || displayLanguage;
+
+      // Map language display names
+      const languageDisplayNames = {
+        'cpp': 'C++',
+        'csharp': 'C#',
+        'javascript': 'JavaScript',
+        'python': 'Python',
+        'java': 'Java'
+      };
+      
+      const displayName = languageDisplayNames[displayLanguage] || 'Code';
+      return `<div class="code-block ${displayLanguage}"><div class="code-header">${displayName}</div><pre><code>${code.trim()}</code></pre></div>`;
     });
 
-    // Replace inline code (`code`) with styled span
-    response = response.replace(/`([^`]+)`/g, '<span class="inline-code">$1</span>');
+    // Replace inline code with more precise pattern
+    // Only match text between single backticks that doesn't contain newlines and is not at the end of a sentence
+    response = response.replace(/`([^`\n]+?)`(?![.]$)/g, '<span class="inline-code">$1</span>');
 
-    // Convert line breaks to <br>
-    response = response.replace(/\n/g, '<br>');
-
+    // Add general formatting for the rest of the response
     return response;
   }
 
