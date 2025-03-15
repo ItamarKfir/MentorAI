@@ -96,12 +96,6 @@ class MentorAIPopup {
         throw new Error('No problem information found');
       }
 
-      console.log('Loaded problem info:', {
-        title: problemInfo.title,
-        language: problemInfo.language,
-        codeLength: problemInfo.userCode?.length || 0
-      });
-
       this.currentProblem = problemInfo;
       this.problemTitle.textContent = this.currentProblem.title;
 
@@ -157,7 +151,6 @@ class MentorAIPopup {
       }
 
       const prompt = this.generatePrompt(type, problemInfo);
-      console.log('Generated prompt with language:', problemInfo.language);
 
       this.aiResponse.innerHTML = '<div class="loading">Getting AI assistance...</div>';
 
@@ -211,7 +204,6 @@ Please provide general guidance on solving this problem in ${language}.`;
   }
 
   async callOpenAI(prompt) {
-    console.log('Making API call to OpenAI...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -236,7 +228,6 @@ Please provide general guidance on solving this problem in ${language}.`;
     }
 
     const data = await response.json();
-    console.log('OpenAI response:', data);
     return data.choices[0].message.content;
   }
 

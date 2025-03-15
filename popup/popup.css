@@ -222,13 +222,9 @@ h1 {
 }
 
 /* Language-specific styling */
-.code-block.cpp .code-header {
-    background-color: #1a4674;
-    color: white;
-}
-
-.code-block.csharp .code-header {
-    background-color: #682876;
+.code-block.cpp .code-header,
+.code-block.csharp .code-header,
+.code-block.java .code-header {
     color: white;
 }
 
@@ -239,11 +235,6 @@ h1 {
 
 .code-block.python .code-header {
     background-color: #3776ab;
-    color: white;
-}
-
-.code-block.java .code-header {
-    background-color: #b07219;
     color: white;
 }
 
