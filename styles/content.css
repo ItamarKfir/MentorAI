@@ -1,0 +1,165 @@
+.mentor-ai-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 10000;
+    animation: slideIn 0.3s ease-out;
+    transition: opacity 0.5s ease-out;
+}
+
+.mentor-ai-notification.fade-out {
+    opacity: 0;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notification-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.notification-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.difficulty {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    display: inline-block;
+    width: fit-content;
+}
+
+.difficulty.easy {
+    background-color: #e2f8f0;
+    color: #047857;
+}
+
+.difficulty.medium {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.difficulty.hard {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.mentor-ai-fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+}
+
+.mentor-ai-fab-button {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #6366f1;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+}
+
+.mentor-ai-fab-button:hover {
+    background-color: #4f46e5;
+    transform: scale(1.05);
+}
+
+.mentor-ai-fab-button:hover .fab-tooltip {
+    opacity: 1;
+    transform: translateX(-100%) translateX(-12px);
+}
+
+.mentor-ai-fab-button img {
+    width: 32px;
+    height: 32px;
+}
+
+.fab-tooltip {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateX(-90%) translateX(-12px) translateY(-50%);
+    background-color: #1e293b;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.2s ease;
+}
+
+.fab-tooltip::after {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-width: 6px 0 6px 6px;
+    border-style: solid;
+    border-color: transparent transparent transparent #1e293b;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.mentor-welcome {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    color: #6366f1;
+    padding: 16px 24px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    font-family: system-ui, -apple-system, sans-serif;
+    animation: slideIn 0.5s ease-out, fadeOut 0.5s ease-in 4.5s forwards;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mentor-welcome img {
+    width: 54px;
+    height: 54px;
+    border-radius: 4px;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
