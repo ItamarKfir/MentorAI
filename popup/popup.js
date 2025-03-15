@@ -76,14 +76,19 @@ class MentorAIPopup {
   }
 
   async checkApiKey() {
-    const { apiKey } = await chrome.storage.local.get('apiKey');
-    if (apiKey) {
-      this.apiKey = apiKey;
-      this.apiKeySection.style.display = 'none';
-      this.apiKeySection.classList.add('hidden');
-      this.mainContent.classList.remove('hidden');
-      this.apiKeyInput.value = '********';
-      this.saveApiKeyBtn.textContent = 'Edit Key';
+    try {
+      const apiKey = await SecureStorage.getSecureApiKey();
+      if (apiKey) {
+        this.apiKey = apiKey;
+        this.apiKeySection.style.display = 'none';
+        this.apiKeySection.classList.add('hidden');
+        this.mainContent.classList.remove('hidden');
+        this.apiKeyInput.value = '********';
+        this.saveApiKeyBtn.textContent = 'Edit Key';
+      }
+    } catch (error) {
+      console.error('Error checking API key:', error);
+      this.showError('Failed to retrieve API key. Please try again.');
     }
   }
 
@@ -125,17 +130,35 @@ class MentorAIPopup {
     }
 
     const apiKey = this.apiKeyInput.value.trim();
-    if (!apiKey) {
-      alert('Please enter a valid API key');
-      return;
+    
+    try {
+      await SecureStorage.securelyStoreApiKey(apiKey);
+      this.apiKey = apiKey;
+      this.apiKeyInput.value = '********';
+      this.apiKeyInput.type = 'password';
+      this.saveApiKeyBtn.textContent = 'Edit Key';
+      this.mainContent.style.display = 'block';
+      this.showSuccess('API key saved securely');
+    } catch (error) {
+      console.error('Error saving API key:', error);
+      this.showError(error.message);
     }
+  }
 
-    await chrome.storage.local.set({ apiKey });
-    this.apiKey = apiKey;
-    this.apiKeyInput.value = '********';
-    this.apiKeyInput.type = 'password';
-    this.saveApiKeyBtn.textContent = 'Edit Key';
-    this.mainContent.style.display = 'block';
+  showError(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    this.apiKeySection.appendChild(errorDiv);
+    setTimeout(() => errorDiv.remove(), 5000);
+  }
+
+  showSuccess(message) {
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.textContent = message;
+    this.apiKeySection.appendChild(successDiv);
+    setTimeout(() => successDiv.remove(), 3000);
   }
 
   async getAIResponse(type) {
@@ -204,31 +227,41 @@ Please provide general guidance on solving this problem in ${language}.`;
   }
 
   async callOpenAI(prompt) {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${this.apiKey}`
-      },
-      body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        temperature: 0.7
-      })
-    });
+    try {
+      const apiKey = await SecureStorage.getSecureApiKey();
+      if (!apiKey) {
+        throw new Error('API key not found');
+      }
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error.message);
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [
+            {
+              role: 'user',
+              content: prompt
+            }
+          ],
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error.message);
+      }
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('Error calling OpenAI:', error);
+      throw error;
     }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
   }
 
   formatResponseWithCodeBackground(response) {
